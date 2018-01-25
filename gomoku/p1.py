@@ -8,11 +8,16 @@ team_name = "p1"
 a2i = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']
 board = np.zeros((15,15))
 
+playing = True
+
 def init():
     while(True):
         waitForTurn()
-        chooseMove()
-        os.remove(team_name + ".go")
+        if(playing):
+            chooseMove()
+            os.remove(team_name + ".go")
+        else:
+            return
 
 # Converts board coordinates into matrix coordinates
 def board2matrixCoords(col, row):
@@ -35,12 +40,13 @@ def storeMove(isme, i, j):
 def waitForTurn():
     while(True):
         if(os.path.isfile(team_name + ".go")):
-            print "HI"
+            if(os.path.isfile("end_game")):
+                print team_name + " shutting down"
+                exit(1)
             with open("move_file") as moveFile:
                 line = moveFile.readline()
                 parts = line.split()
                 if len(parts) > 0:
-                    print team_name + " Found the file"
                     player= parts[0]
                     col = parts[1]
                     row = parts[2]
@@ -50,7 +56,6 @@ def waitForTurn():
         time.sleep(0.1)
 
 def makeMove(i,j):
-    print team_name + " making move"
     storeMove(True, i,j)
     boardMove = matrix2boardCoords(i,j)
     moveStr = team_name+ " " + boardMove[0] + " " + boardMove[1]
@@ -59,7 +64,6 @@ def makeMove(i,j):
     return
 
 def chooseMove():
-    print team_name + " Choosing move"
     for i in range(15):
         for j in range(15):
             if(board[i,j] == 0):
@@ -68,3 +72,4 @@ def chooseMove():
                 
         
 init()
+
