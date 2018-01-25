@@ -1,11 +1,13 @@
 import time
 import os
-import numpy as np
 
 
 team_name = "p2"
 
 a2i = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']
+
+board_height = 15
+board_width = 15
 board = np.zeros((15,15))
 
 playing = True
@@ -69,7 +71,8 @@ def chooseMove():
             if(board[i,j] == 0):
                 makeMove(i,j)
                 return
-                
+
+
         
 init()
 
