@@ -1,6 +1,6 @@
 import time
 import os
-
+import numpy as np
 
 team_name = "p1"
 
@@ -8,7 +8,7 @@ a2i = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'
 
 board_height = 15
 board_width = 15
-board = np.zeros((15,15))
+board = np.zeros((board_height,board_width))
 
 playing = True
 
@@ -73,6 +73,58 @@ def chooseMove():
                 return
 
 
-        
+def diagonalScore(board):
+    score = 0
+    mycount = 0
+    theircount = 0
+
+    # counts lower triangle
+    for i in range(board_height):
+        mycount = 0
+        theircount = 0
+        for j in range(board_width-i):
+            square = board[i+j,j]
+            if(square == 1):
+                mycount += 1
+                if(theircount != 0):
+                    score -= theircount * theircount
+                    theircount = 0
+            elif(square == -1):
+                theircount += 1
+                if(mycount != 0):
+                    score += mycount * mycount
+                    mycount = 0
+            else:
+                if(theircount != 0):
+                    score -= theircount * theircount
+                    theircount = 0
+                if(mycount != 0):
+                    score += mycount * mycount
+                    mycount = 0
+
+    # counts upper triangle
+    for i in range(1, board_height):
+        myscore = 0
+        theircount = 0
+        for j in range(board_height-i):
+            square = board[j,i+j]
+            if(square == 1):
+                mycount += 1
+                if(theircount != 0):
+                    score -= theircount * theircount
+                    theircount = 0
+            elif(square == -1):
+                theircount += 1
+                if(mycount != 0):
+                    score += mycount * mycount
+                    mycount = 0
+            else:
+                if(theircount != 0):
+                    score -= theircount * theircount
+                    theircount = 0
+                if(mycount != 0):
+                    score += mycount * mycount
+                    mycount = 0
+    return score
 init()
 
