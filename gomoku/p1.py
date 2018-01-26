@@ -72,59 +72,67 @@ def chooseMove():
                 makeMove(i,j)
                 return
 
+def checkCount(val, mycount, theircount, score):
+    if(val == 1):
+        mycount += 1
+        if(theircount != 0):
+            score -= theircount * theircount
+            theircount = 0
+    elif(val == -1):
+        theircount += 1
+        if(mycount != 0):
+            score += mycount * mycount
+            mycount = 0
+    else:
+        if(theircount != 0):
+            score -= theircount * theircount
+            theircount = 0
+        if(mycount != 0):
+            score += mycount * mycount
+            mycount = 0
+    return mycount, theircount, score
 
 def diagonalScore(board):
     score = 0
     mycount = 0
     theircount = 0
 
-    # counts lower triangle
+    # counts lower left triangle
     for i in range(board_height):
         mycount = 0
         theircount = 0
         for j in range(board_width-i):
             square = board[i+j,j]
-            if(square == 1):
-                mycount += 1
-                if(theircount != 0):
-                    score -= theircount * theircount
-                    theircount = 0
-            elif(square == -1):
-                theircount += 1
-                if(mycount != 0):
-                    score += mycount * mycount
-                    mycount = 0
-            else:
-                if(theircount != 0):
-                    score -= theircount * theircount
-                    theircount = 0
-                if(mycount != 0):
-                    score += mycount * mycount
-                    mycount = 0
-
-    # counts upper triangle
+            mycount, theircount, score = checkCount(square, mycount, theircount, score)
+        mycount, theircount, score =  checkCount(0, mycount, theircount, score)
+        
+    # counts upper right triangle
     for i in range(1, board_height):
         myscore = 0
         theircount = 0
         for j in range(board_height-i):
             square = board[j,i+j]
-            if(square == 1):
-                mycount += 1
-                if(theircount != 0):
-                    score -= theircount * theircount
-                    theircount = 0
-            elif(square == -1):
-                theircount += 1
-                if(mycount != 0):
-                    score += mycount * mycount
-                    mycount = 0
-            else:
-                if(theircount != 0):
-                    score -= theircount * theircount
-                    theircount = 0
-                if(mycount != 0):
-                    score += mycount * mycount
-                    mycount = 0
+            mycount, theircount, score =  checkCount(square, mycount, theircount, score)
+        mycount, theircount, score =  checkCount(0, mycount, theircount, score)
+
+    #counts upper left triangle
+    for i in range(board_height):
+        myscore = 0
+        theirscore = 0
+        for j in range(i+1):
+            square = board[i-j,j]
+            mycount, theircount, score =  checkCount(square, mycount, theircount, score)
+        mycount, theircount, score =  checkCount(0, mycount, theircount, score)
+
+    #counts lower right triangle
+    for i in range(board_width-1):
+        myscore = 0
+        theirscore = 0
+        for j in range(board_width-1, i, -1):
+            square = board[j, board_height-j+i]
+            mycount, theircount, score =  checkCount(square, mycount, theircount, score)
+        mycount, theircount, score =  checkCount(0, mycount, theircount, score)
+            
     return score
 init()
 
