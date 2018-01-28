@@ -158,11 +158,16 @@ def getScore(board):
 maxDepth = 1
 
 def miniMaxDecision(board):
-    v = maxValue(board)
+    b = np.copy(board)
+    v = maxValue(b, 1)
 
-def maxValue(board):
+def maxValue(board, alpha, beta, depth):
+    if(depth >= maxDepth):
+        return getScore(board)
 
-def minValue(board):
+def minValue(board, alpha, beta, depth):
+    if(depth >= maxDepth):
+        return getScore(board)
     
 init()
 
