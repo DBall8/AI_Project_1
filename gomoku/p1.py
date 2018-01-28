@@ -128,7 +128,7 @@ def getScore(board):
         
     # counts upper right triangle
     for i in range(1, board_height):
-        myscore = 0
+        mycount = 0
         theircount = 0
         for j in range(board_height-i):
             square = board[j,i+j]
@@ -137,8 +137,8 @@ def getScore(board):
 
     #counts upper left triangle
     for i in range(board_height):
-        myscore = 0
-        theirscore = 0
+        mycount = 0
+        theircount = 0
         for j in range(i+1):
             square = board[i-j,j]
             mycount, theircount, score =  checkCount(square, mycount, theircount, score)
@@ -146,13 +146,23 @@ def getScore(board):
 
     #counts lower right triangle
     for i in range(board_width-1):
-        myscore = 0
-        theirscore = 0
+        mycount = 0
+        theircount = 0
         for j in range(board_width-1, i, -1):
             square = board[j, board_height-j+i]
             mycount, theircount, score =  checkCount(square, mycount, theircount, score)
         mycount, theircount, score =  checkCount(0, mycount, theircount, score)
             
     return score
+
+maxDepth = 1
+
+def miniMaxDecision(board):
+    v = maxValue(board)
+
+def maxValue(board):
+
+def minValue(board):
+    
 init()
 
