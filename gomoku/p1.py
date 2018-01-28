@@ -66,11 +66,8 @@ def makeMove(i,j):
     return
 
 def chooseMove():
-    for i in range(15):
-        for j in range(15):
-            if(board[i,j] == 0):
-                makeMove(i,j)
-                return
+    move = miniMaxDecision(board)
+    makeMove(move[0], move[1])
 
 # helper function for getScore
 def checkCount(val, mycount, theircount, score):
@@ -160,36 +157,45 @@ maxDepth = 1
 def miniMaxDecision(board):
     b = np.copy(board)
     v = maxValue(b, -1*float('inf'), float('inf'), 0)
+    return v[1]
 
 def maxValue(board, alpha, beta, depth):
+    move = [-1, -1]
     if(depth >= maxDepth):
-        return getScore(board)
+        return getScore(board), move
     v = - 1 * float('inf')
     for i in range(board_height):
         for j in range(board_width):
-            if(board [i, j] == 0)
+            if(board [i, j] == 0):
                 b = np.copy(board)
                 b[i, j] = 1
-                v = max(v, minValue(b, alpha, beta, depth+1))
-                if(v >= beta)
-                    return v
+                minTurn = minValue(b, alpha, beta, depth+1)
+                if minTurn[0] > v:
+                    move = [i,j]
+                    v = minTurn[0]
+                if(v >= beta):
+                    return v, move
                 alpha = max(alpha, v)
-    return v
+    return v, move
 
 def minValue(board, alpha, beta, depth):
+    move = [-1, -1]
     if(depth >= maxDepth):
-        return getScore(board)
+        return getScore(board), move
     v = float('inf')
     for i in range(board_height):
         for j in range(board_width):
-            if(board [i, j] == 0)
+            if(board [i, j] == 0):
                 b = np.copy(board)
                 b[i, j] = 1
-                v = min(v, maxValue(b, alpha, beta, depth+1))
-                if(v <= alpha)
-                    return v
+                maxTurn = maxValue(b, alpha, beta, depth+1)
+                if maxTurn[0] < v:
+                    move = [i,j]
+                    v = maxTurn[0]
+                if(v <= alpha):
+                    return v, move
                 beta = max(beta, v)
-    return v
+    return v, move
 
     
 init()

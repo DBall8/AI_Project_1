@@ -1,6 +1,6 @@
 import time
 import os
-
+import numpy as np
 
 team_name = "p2"
 
