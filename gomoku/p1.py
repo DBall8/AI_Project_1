@@ -194,7 +194,7 @@ def minValue(board, alpha, beta, depth):
                     v = maxTurn[0]
                 if(v <= alpha):
                     return v, move
-                beta = max(beta, v)
+                beta = min(beta, v)
     return v, move
 
     
