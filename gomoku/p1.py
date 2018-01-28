@@ -92,10 +92,28 @@ def checkCount(val, mycount, theircount, score):
             mycount = 0
     return mycount, theircount, score
 
-def diagonalScore(board):
+def getScore(board):
     score = 0
     mycount = 0
     theircount = 0
+
+    # counts horizontally
+    for i in range(board_height):
+        mycount = 0
+        theircount = 0
+        for j in range(board_width):
+            square = board[i,j]
+            mycount, theircount, score = checkCount(square, mycount, theircount, score)
+        mycount, theircount, score =  checkCount(0, mycount, theircount, score)
+
+    # counts vertically
+    for j in range(board_width):
+        mycount = 0
+        theircount = 0
+        for i in range(board_height):
+            square = board[i,j]
+            mycount, theircount, score = checkCount(square, mycount, theircount, score)
+        mycount, theircount, score =  checkCount(0, mycount, theircount, score)
 
     # counts lower left triangle
     for i in range(board_height):
