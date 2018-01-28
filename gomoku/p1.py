@@ -72,6 +72,7 @@ def chooseMove():
                 makeMove(i,j)
                 return
 
+# helper function for getScore
 def checkCount(val, mycount, theircount, score):
     if(val == 1):
         mycount += 1
@@ -92,6 +93,7 @@ def checkCount(val, mycount, theircount, score):
             mycount = 0
     return mycount, theircount, score
 
+# gets an evaluation score of a board configuration
 def getScore(board):
     score = 0
     mycount = 0
