@@ -159,7 +159,7 @@ maxDepth = 1
 
 def miniMaxDecision(board):
     b = np.copy(board)
-    v = maxValue(b, 1)
+    v = maxValue(b, -1*float('inf'), float('inf'), 0)
 
 def maxValue(board, alpha, beta, depth):
     if(depth >= maxDepth):
