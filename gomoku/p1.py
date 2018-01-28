@@ -164,10 +164,33 @@ def miniMaxDecision(board):
 def maxValue(board, alpha, beta, depth):
     if(depth >= maxDepth):
         return getScore(board)
+    v = - 1 * float('inf')
+    for i in range(board_height):
+        for j in range(board_width):
+            if(board [i, j] == 0)
+                b = np.copy(board)
+                b[i, j] = 1
+                v = max(v, minValue(b, alpha, beta, depth+1))
+                if(v >= beta)
+                    return v
+                alpha = max(alpha, v)
+    return v
 
 def minValue(board, alpha, beta, depth):
     if(depth >= maxDepth):
         return getScore(board)
+    v = float('inf')
+    for i in range(board_height):
+        for j in range(board_width):
+            if(board [i, j] == 0)
+                b = np.copy(board)
+                b[i, j] = 1
+                v = min(v, maxValue(b, alpha, beta, depth+1))
+                if(v <= alpha)
+                    return v
+                beta = max(beta, v)
+    return v
+
     
 init()
 
