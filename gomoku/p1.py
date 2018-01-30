@@ -187,7 +187,7 @@ def minValue(board, alpha, beta, depth):
         for j in range(board_width):
             if(board [i, j] == 0):
                 b = np.copy(board)
-                b[i, j] = 1
+                b[i, j] = -1
                 maxTurn = maxValue(b, alpha, beta, depth+1)
                 if maxTurn[0] < v:
                     move = [i,j]
