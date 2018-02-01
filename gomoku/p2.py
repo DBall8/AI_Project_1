@@ -66,8 +66,8 @@ def makeMove(i,j):
     return
 
 def chooseMove():
-    for i in range(15):
-        for j in range(15):
+    for i in range(5, 15):
+        for j in range(3,15):
             if(board[i,j] == 0):
                 makeMove(i,j)
                 return

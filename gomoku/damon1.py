@@ -2,7 +2,7 @@ import time
 import os
 import numpy as np
 
-team_name = "p2"
+team_name = "p1"
 
 a2i = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']
 
@@ -13,6 +13,15 @@ globalboard = np.zeros((board_height,board_width))
 playing = True
 
 def init():
+##    globalboard[5,3] = -1
+##    globalboard[5,4] = -1
+##    #print getScore(globalboard)
+##    globalboard[6,4] = 1
+##    #print globalboard
+##    #print maxValue(globalboard, float('-inf'), float('inf'), 0, 1, time.time() + 9)
+##    globalboard[7,5] = 1
+##    print globalboard
+##    print getScore(globalboard)
     while(True):
         waitForTurn()
         if(playing):
@@ -70,30 +79,46 @@ def chooseMove():
     makeMove(move[0], move[1])
 
 # helper function for getScore
-def checkCount(val, mycount, theircount, score):
+def checkCount(val, prev, mycount, theircount, score):
     if(val == 1):
         if(theircount > 0):
+            if(prev == 2):
+                score -= theircount
+                prev = -2
             score -= theircount * theircount * theircount
             theircount = 0
         mycount += 1
         if(mycount >= 5):
-            return 0,0,999999999, 1
+            return 1,0,0,999999999, 1
     elif(val == -1):
         if(mycount > 0):
+            if(prev == 2):
+                score += mycount
+                prev = -2
             score += mycount * mycount * mycount
             mycount = 0
         theircount += 1
         if(theircount >= 5):
-            return 0,0,-999999999, -1
+            return -1,0,0,-999999999, -1
     else:
         if(theircount > 0):
+            if(val == 0):
+                score-= theircount
+            if(prev == 2):
+                score -= theircount
             score -= theircount * theircount * theircount
             theircount = 0
         if(mycount > 0):
+            if(val == 0):
+                score += mycount
+            if(prev == 2):
+                score += mycount
             score += mycount * mycount * mycount
             mycount = 0
+        if(val == 0):
+            prev = 2
         
-    return mycount, theircount, score, 0
+    return prev, mycount, theircount, score, 0
 
 # gets an evaluation score of a board configuration
 def getScore(board):
@@ -101,97 +126,126 @@ def getScore(board):
     mycount = 0
     theircount = 0
     win = 0
+    prev = -2
 
+    #prevscore = 0
+    
     # counts horizontally
     for i in range(board_height):
         mycount = 0
         theircount = 0
-        emptycount = 0
+        prev = -2
         for j in range(board_width):
             square = board[i,j]
-            mycount, theircount, score, win = checkCount(square, mycount, theircount, score)
+            prev, mycount, theircount, score, win = checkCount(square, prev, mycount, theircount, score)
             if(win != 0):
                 return score, win
-        mycount, theircount, score, win = checkCount(-2, mycount, theircount, score)
+        prev, mycount, theircount, score, win = checkCount(-2, prev, mycount, theircount, score)
         if(win != 0):
             return score, win
-
+        
+    #print "HORIZONTAL " + str(score-prevscore)
+    #prevscore = score
+    
     # counts vertically
     for j in range(board_width):
         mycount = 0
         theircount = 0
+        prev = -2
         for i in range(board_height):
             square = board[i,j]
-            mycount, theircount, score, win = checkCount(square, mycount, theircount, score)
+            prev, mycount, theircount, score, win = checkCount(square, prev, mycount, theircount, score)
             if(win != 0):
                 return score, win
-        mycount, theircount, score, win = checkCount(-2, mycount, theircount, score)
+        prev, mycount, theircount, score, win = checkCount(-2, prev, mycount, theircount, score)
         if(win != 0):
             return score, win
-
+        
+    #print "VERTICAL " + str(score-prevscore)
+    #prevscore = score
+    
     # counts lower left triangle
     for i in range(board_height):
         mycount = 0
         theircount = 0
+        prev = -2
         for j in range(board_width-i):
             square = board[i+j,j]
-            mycount, theircount, score, win = checkCount(square, mycount, theircount, score)
+            prev, mycount, theircount, score, win = checkCount(square, prev, mycount, theircount, score)
             if(win != 0):
                 return score, win
-        mycount, theircount, score, win = checkCount(-2, mycount, theircount, score)
+        prev, mycount, theircount, score, win = checkCount(-2, prev, mycount, theircount, score)
         if(win != 0):
             return score, win
-        
+
+    #print "LOWER LEFT " + str(score-prevscore)
+    #prevscore = score
+    
     # counts upper right triangle
     for i in range(1, board_height):
         mycount = 0
         theircount = 0
+        prev = -2
         for j in range(board_height-i):
             square = board[j,i+j]
-            mycount, theircount, score, win = checkCount(square, mycount, theircount, score)
+            prev, mycount, theircount, score, win = checkCount(square, prev, mycount, theircount, score)
             if(win != 0):
                 return score, win
-        mycount, theircount, score, win = checkCount(-2, mycount, theircount, score)
+        prev, mycount, theircount, score, win = checkCount(-2, prev, mycount, theircount, score)
         if(win != 0):
             return score, win
+
+    #print "UPPER RIGHT " + str(score-prevscore)
+    #prevscore = score
 
     #counts upper left triangle
     for i in range(board_height):
         mycount = 0
         theircount = 0
+        prev = -2
         for j in range(i+1):
             square = board[i-j,j]
-            mycount, theircount, score, win = checkCount(square, mycount, theircount, score)
+            prev, mycount, theircount, score, win = checkCount(square, prev, mycount, theircount, score)
             if(win != 0):
                 return score, win
-        mycount, theircount, score, win = checkCount(-2, mycount, theircount, score)
+        prev, mycount, theircount, score, win = checkCount(-2, prev, mycount, theircount, score)
         if(win != 0):
             return score, win
+
+    #print "UPPER LEFT " + str(score-prevscore)
+    #prevscore = score
 
     #counts lower right triangle
     for i in range(board_width-1):
         mycount = 0
         theircount = 0
+        prev = -2
         for j in range(board_width-1, i, -1):
             square = board[j, board_height-j+i]
-            mycount, theircount, score, win = checkCount(square, mycount, theircount, score)
+            prev, mycount, theircount, score, win = checkCount(square, prev, mycount, theircount, score)
             if(win != 0):
                 return score, win
-        mycount, theircount, score, win = checkCount(-2, mycount, theircount, score)
+        prev, mycount, theircount, score, win = checkCount(-2, prev, mycount, theircount, score)
         if(win != 0):
             return score, win
+        
+    #print "LOWER RIGHT " + str(score-prevscore)
+    #prevscore = score
             
     return score, 0
 
 
+k = 100
+
 def miniMaxDecision(board):
     timeup = time.time() + 9.0
-    queue = []
     maxDepth = 1
     bestmove = [board_height/2, board_width/2, 4]
     while(time.time() < timeup):
         b = np.copy(board)
-        v = maxValue(b, float('-inf'), float('inf'), 0, maxDepth, timeup, queue)
+        v = maxValue(b, float('-inf'), float('inf'), 0, maxDepth, timeup)
+        if(time.time() > timeup):
+            return bestmove[0], bestmove[1]
         move = v[1]
         if(move[0] < 0 or move[0] >= board_height or move[1] < 0 or move[1] >= board_width):
             return bestmove
@@ -202,58 +256,96 @@ def miniMaxDecision(board):
         
     return bestmove[0], bestmove[1]
 
-def maxValue(board, alpha, beta, depth, maxDepth, timeup, queue):
+def maxValue(board, alpha, beta, depth, maxDepth, timeup):
     move = [-1, -1]
-    score, win = getScore(board)
-    if(depth >= maxDepth and win==0):
-            return score, move
-    if(win == 1):
-        return 999999999, move
-    elif(win == -1):
-        return -999999999, move
     v = float('-inf')
-    
+    queue = []
+    if(depth >= maxDepth):
+        print depth
+        score, win = getScore(board)
+        return score, move
     for i in range(board_height):
         for j in range(board_width):
             if(board[i, j] == 0 and checkBordering(board, i, j)):
                 b = np.copy(board)
                 b[i, j] = 1
-                if(time.time() >= timeup):
-                    return v, [-1,-1]
-                minTurn = minValue(b, alpha, beta, depth+1, maxDepth, timeup, [])
-                if minTurn[0] > v:
-                    move = [i,j]
-                    v = minTurn[0]
-                if(v >= beta):
-                    return v, [i,j]
-                alpha = max(alpha, v)
+                score, win = getScore(board)
+                if(win == 1):
+                    return 999999999, [i, j]
+                addMaxSuccessor(queue, i, j, score)
+
+    for s in queue:
+        if(time.time() >= timeup):
+            return queue[2], [queue[0],queue[1]]
+        b = np.copy(board)
+        i = s[0]
+        j = s[1]
+        b[i, j] = 1
+        minTurn = minValue(b, alpha, beta, depth+1, maxDepth, timeup)
+        if minTurn[0] > v:
+            move = [i,j]
+            v = minTurn[0]
+        if(v >= beta):
+            return v, [i,j]
+        alpha = max(alpha, v)
     return v, move
 
-def minValue(board, alpha, beta, depth, maxDepth, timeup, queue):
+def minValue(board, alpha, beta, depth, maxDepth, timeup):
     move = [-1, -1]
-    score, win = getScore(board)
-    if(depth >= maxDepth and win==0):
-            return score, move
-    if(win == 1):
-        return 999999999, move
-    elif(win == -1):
-        return -999999999, move
     v = float('inf')
+    queue = []
+    if(depth >= maxDepth):
+        print depth
+        score, win = getScore(board)
+        return score, move
     for i in range(board_height):
         for j in range(board_width):
             if(board[i, j] == 0 and checkBordering(board, i, j)):
                 b = np.copy(board)
                 b[i, j] = -1
-                if(time.time() >= timeup):
-                    return v, [-1,-1]
-                maxTurn = maxValue(b, alpha, beta, depth+1, maxDepth, timeup, [])
-                if maxTurn[0] < v:
-                    move = [i,j]
-                    v = maxTurn[0]
-                if(v <= alpha):
-                    return v, [i,j]
-                beta = min(beta, v)
+                score, win = getScore(board)
+                if(win == -1):
+                    return -999999999, [i, j]
+                addMinSuccessor(queue, i, j, score)
+
+    for s in queue:
+        if(time.time() >= timeup):
+            return queue[2], [queue[0],queue[1]]
+        b = np.copy(board)
+        i = s[0]
+        j = s[1]
+        b[i, j] = -1
+        maxTurn = maxValue(b, alpha, beta, depth+1, maxDepth, timeup)
+        if maxTurn[0] < v:
+            move = [i,j]
+            v = maxTurn[0]
+        if(v <= alpha):
+            return v, [i,j]
+        beta = min(beta, v)
     return v, move
+
+def addMaxSuccessor(queue, i, j, score):
+    for n in range(len(queue)):
+        if(score >= queue[n][2]):
+            queue.insert(n, [i, j, score])
+            while(len(queue) > k):
+                queue.pop()
+            return
+    queue.append([i, j, score])
+    while(len(queue) > k):
+        queue.pop()
+
+def addMinSuccessor(queue, i, j, score):
+    for n in range(len(queue)):
+        if(score <= queue[n][2]):
+            queue.insert(n, [i, j, score])
+            while(len(queue) > k):
+                queue.pop()
+            return
+    queue.append([i, j, score])
+    while(len(queue) > k):
+        queue.pop()
+
 
 def checkBordering(board, i, j):
     border = False
