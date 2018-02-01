@@ -2,7 +2,7 @@ import time
 import os
 import numpy as np
 
-team_name = "p1"
+team_name = "damon1"
 
 a2i = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']
 
@@ -13,15 +13,6 @@ globalboard = np.zeros((board_height,board_width))
 playing = True
 
 def init():
-##    globalboard[5,3] = -1
-##    globalboard[5,4] = -1
-##    #print getScore(globalboard)
-##    globalboard[6,4] = 1
-##    #print globalboard
-##    #print maxValue(globalboard, float('-inf'), float('inf'), 0, 1, time.time() + 9)
-##    globalboard[7,5] = 1
-##    print globalboard
-##    print getScore(globalboard)
     while(True):
         waitForTurn()
         if(playing):
@@ -261,7 +252,6 @@ def maxValue(board, alpha, beta, depth, maxDepth, timeup):
     v = float('-inf')
     queue = []
     if(depth >= maxDepth):
-        print depth
         score, win = getScore(board)
         return score, move
     for i in range(board_height):
@@ -295,7 +285,6 @@ def minValue(board, alpha, beta, depth, maxDepth, timeup):
     v = float('inf')
     queue = []
     if(depth >= maxDepth):
-        print depth
         score, win = getScore(board)
         return score, move
     for i in range(board_height):
